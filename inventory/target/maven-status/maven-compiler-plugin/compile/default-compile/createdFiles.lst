@@ -1,0 +1,3 @@
+com/modular/monolith/inventory/messaging/OrderRequestListener.class
+com/modular/monolith/inventory/repository/ItemRepository.class
+com/modular/monolith/inventory/entity/Item.class

@@ -1,0 +1,10 @@
+# Inventory module configuration
+spring:
+  application:
+    name: inventory-service
+  activemq:
+    broker-url: tcp://localhost:61616
+    user: admin
+    password: admin
+  jms:
+    pub-sub-domain: false

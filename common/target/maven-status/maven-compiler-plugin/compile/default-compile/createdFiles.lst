@@ -1,0 +1,3 @@
+com/modular/monolith/common/events/OrderRejectedEvent.class
+com/modular/monolith/common/events/OrderRequestedEvent.class
+com/modular/monolith/common/events/OrderApprovedEvent.class

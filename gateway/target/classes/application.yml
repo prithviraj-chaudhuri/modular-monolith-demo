@@ -1,0 +1,15 @@
+# Gateway configuration
+spring:
+  application:
+    name: gateway-service
+  cloud:
+    gateway:
+      routes:
+        - id: inventory
+          uri: http://localhost:8081
+          predicates:
+            - Path=/inventory/**
+        - id: orders
+          uri: http://localhost:8082
+          predicates:
+            - Path=/orders/**

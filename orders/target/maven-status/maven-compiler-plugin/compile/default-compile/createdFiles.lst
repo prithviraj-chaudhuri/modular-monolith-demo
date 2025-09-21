@@ -1,0 +1,4 @@
+com/modular/monolith/orders/repository/OrderRepository.class
+com/modular/monolith/orders/messaging/OrderResponseListener.class
+com/modular/monolith/orders/messaging/OrderEventPublisher.class
+com/modular/monolith/orders/entity/Order.class
