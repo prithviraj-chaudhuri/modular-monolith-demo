@@ -1,0 +1,87 @@
+services:
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+
+  activemq:
+    image: apache/activemq-artemis:latest-alpine
+    environment:
+      ARTEMIS_USER: ${ARTEMIS_USER}
+      ARTEMIS_PASSWORD: ${ARTEMIS_PASSWORD}
+    ports:
+      - "61616:61616"
+      - "8161:8161"
+    volumes:
+      - activemq_data:/var/lib/artemis-instance
+
+  gateway:
+    build:
+      context: .
+      args:
+        MODULE: gateway
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+      - activemq
+    environment:
+      - ACTIVEMQ_USER=${ARTEMIS_USER}
+      - ACTIVEMQ_PASSWORD=${ARTEMIS_PASSWORD}
+      - ACTIVEMQ_URL=tcp://activemq:61616
+
+  inventory:
+    build:
+      context: .
+      args:
+        MODULE: inventory
+    ports:
+      - "8081:8081"
+    depends_on:
+      - postgres
+      - activemq
+    environment:
+      - DB_USERNAME=${POSTGRES_USER}
+      - DB_PASSWORD=${POSTGRES_PASSWORD}
+      - DB_URL=jdbc:postgresql://postgres:5432/${POSTGRES_DB}
+      - ACTIVEMQ_USER=${ARTEMIS_USER}
+      - ACTIVEMQ_PASSWORD=${ARTEMIS_PASSWORD}
+      - ACTIVEMQ_URL=tcp://activemq:61616
+
+  orders:
+    build:
+      context: .
+      args:
+        MODULE: orders
+    ports:
+      - "8082:8082"
+    depends_on:
+      - postgres
+      - activemq
+    environment:
+      - DB_USERNAME=${POSTGRES_USER}
+      - DB_PASSWORD=${POSTGRES_PASSWORD}
+      - DB_URL=jdbc:postgresql://postgres:5432/${POSTGRES_DB}
+      - ACTIVEMQ_USER=${ARTEMIS_USER}
+      - ACTIVEMQ_PASSWORD=${ARTEMIS_PASSWORD}
+      - ACTIVEMQ_URL=tcp://activemq:61616
+
+volumes:
+  postgres_data:
+  activemq_data:
