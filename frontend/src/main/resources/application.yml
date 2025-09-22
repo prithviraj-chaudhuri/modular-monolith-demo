@@ -1,0 +1,6 @@
+# Frontend configuration
+server:
+  port: 3000
+spring:
+  application:
+    name: frontend-service

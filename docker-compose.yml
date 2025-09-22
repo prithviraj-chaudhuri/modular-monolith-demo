@@ -39,7 +39,6 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      - postgres
       - activemq
     environment:
       - ACTIVEMQ_USER=${ARTEMIS_USER}
@@ -81,6 +80,18 @@ services:
       - ACTIVEMQ_USER=${ARTEMIS_USER}
       - ACTIVEMQ_PASSWORD=${ARTEMIS_PASSWORD}
       - ACTIVEMQ_URL=tcp://activemq:61616
+
+  frontend:
+    build:
+      context: .
+      args:
+        MODULE: frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - gateway
+    environment:
+      - GATEWAY_URL=http://gateway:8080
 
 volumes:
   postgres_data:

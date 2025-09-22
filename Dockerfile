@@ -1,37 +1,26 @@
-FROM maven:3.9.4-openjdk-17 AS build
+FROM maven:3.8.5-openjdk-17 AS build
 
+# Set the working directory
 WORKDIR /app
 
-# Copy pom files for dependency resolution
-COPY pom.xml .
-COPY common/pom.xml common/
-COPY gateway/pom.xml gateway/
-COPY inventory/pom.xml inventory/
-COPY orders/pom.xml orders/
-COPY frontend/pom.xml frontend/
-
-# Download dependencies
-RUN mvn dependency:go-offline
-
-# Copy source code
+# Copy the entire project
 COPY . .
 
-# Build argument for module selection
+# Build the specific module and its dependencies
 ARG MODULE
+RUN mvn clean package -pl ${MODULE} -am -DskipTests
 
-# Build the specific module
-RUN mvn package -pl $MODULE -am -DskipTests
+FROM openjdk:17-jre-slim
 
-FROM openjdk:17-jdk-slim
-
-# Build argument for module selection
-ARG MODULE
-
+# Set the working directory
 WORKDIR /app
 
 # Copy the built JAR from the build stage
-RUN find /app -name "*.jar" -path "*/$MODULE/target/*" -exec cp {} /app/app.jar \; || echo "JAR not found"
+ARG MODULE
+COPY --from=build /app/${MODULE}/target/${MODULE}-1.0.0.jar app.jar
 
+# Expose the port (assuming default Spring Boot port 8080, adjust if needed)
 EXPOSE 8080
 
-ENTRYPOINT ["java","-jar","app.jar"]
+# Run the application
+ENTRYPOINT ["java", "-jar", "app.jar"]

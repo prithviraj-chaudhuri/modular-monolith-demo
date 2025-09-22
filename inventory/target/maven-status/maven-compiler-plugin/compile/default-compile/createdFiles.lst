@@ -1,3 +1,6 @@
 com/modular/monolith/inventory/messaging/OrderRequestListener.class
-com/modular/monolith/inventory/repository/ItemRepository.class
+com/modular/monolith/inventory/InventoryApplication.class
+com/modular/monolith/inventory/service/ItemService.class
 com/modular/monolith/inventory/entity/Item.class
+com/modular/monolith/inventory/repository/ItemRepository.class
+com/modular/monolith/inventory/controller/ItemController.class

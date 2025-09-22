@@ -1,4 +1,6 @@
 # Inventory module configuration
+server:
+  port: 8081
 spring:
   application:
     name: inventory-service
